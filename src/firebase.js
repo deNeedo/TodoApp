@@ -1,6 +1,5 @@
-import { initializeApp } from "https://www.gstatic.com/firebasejs/9.1.1/firebase-app.js";
-import { getFirestore } from "https://www.gstatic.com/firebasejs/9.1.1/firebase-firestore.js"
-
+import { initializeApp } from 'firebase/app'
+import { getFirestore } from 'firebase/firestore'
 
 // For Firebase JS SDK v7.20.0 and later, measurementId is optional
 const firebaseConfig = {
@@ -11,7 +10,7 @@ const firebaseConfig = {
     messagingSenderId: "972108814482",
     appId: "1:972108814482:web:74b244d47a3fbb994cee4b",
     measurementId: "G-C33720XNYS"
-  };
+};
 
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
