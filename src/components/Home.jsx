@@ -1,13 +1,13 @@
 import React from 'react'
-import { collection, query, onSnapshot, doc, updateDoc, deleteDoc, QuerySnapshot } from 'firebase/firestore'
-import Title from './components/Title'
-import Todo from './components/Todo'
-import AddTodo from './components/AddTodo'
-import { db } from './firebase'
-import './App.css'
+import {collection, query, onSnapshot, doc, updateDoc, deleteDoc, QuerySnapshot} from 'firebase/firestore'
+import Title from './Title.jsx'
+import Todo from './Todo.jsx'
+import AddTodo from './AddTodo.jsx'
+import {db} from '../firebase.js'
+import './style/Home.css'
 
 
-export default function App() {
+export default function Home() {
     const [todos, setTodos] = React.useState([])
 
     React.useEffect(() => {
