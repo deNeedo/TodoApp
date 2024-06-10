@@ -40,7 +40,13 @@ export default function Home() {
         </div> :
         <div>
             <div> <AddTodo user={user}/> </div>
-            <div> {todos.map((todo) => (<Todo key={todo.id} todo={todo} />))} </div>
+            <div> {todos.map((todo) => (
+                (todo.completed === true)
+                ? <Todo className={'complete'} key={todo.id} todo={todo}/>
+                : (Date.parse(todo.date) - Date.now() < 0)
+                ? <Todo className={'overdue'} key={todo.id} todo={todo}/>
+                : <Todo className={'incomplete'} key={todo.id} todo={todo}/>
+            ))} </div>
             <div> <button onClick={registerRedirect}> REGISTER REDIRECT </button> </div>
             <div> <button onClick={loginRedirect}> LOGIN REDIRECT </button> </div>
             <div> <button onClick={logout}> LOGOUT </button> </div>
