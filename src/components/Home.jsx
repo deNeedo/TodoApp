@@ -9,7 +9,7 @@ import './style/Home.css'
 export default function Home() {
     const navigate = useNavigate(); const location = useLocation()
     const [todos, setTodos] = useState([])
-    const [user, setUser] = useState(location.state.user);
+    const [user, setUser] = useState(location.state !== null ? location.state.user : null);
     const loginRedirect = () => {user === null ? navigate('/login', {state: {user: user}}) : console.log("Already logged in!")}
     const registerRedirect = () => {user === null ? navigate('/register', {state: {user: user}}) : console.log("Already logged in!")}
     const logout = () => {setUser(null)}
