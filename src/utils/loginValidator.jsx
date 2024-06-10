@@ -4,9 +4,8 @@ import { db } from '../firebase.js'
 
 const fetchUser = async (username, password) => {
     try {
+        let status = 1; let hash
         const querySnapshot = await getDocs(collection(db, "users"));
-        let status = 1
-        let hash
         querySnapshot.forEach((doc) => {
             if (doc.data().username === username) {
                 hash = doc.data().password
@@ -17,7 +16,7 @@ const fetchUser = async (username, password) => {
         }
         return status
     } catch (error) {
-        throw error
+        return 1
     }
 }
 

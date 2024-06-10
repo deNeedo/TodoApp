@@ -1,5 +1,5 @@
-import React from 'react'
-import { useNavigate } from 'react-router-dom'
+import React, { useEffect, useState } from 'react'
+import { useNavigate, useLocation } from 'react-router-dom'
 import { collection, addDoc } from 'firebase/firestore'
 import { db } from '../firebase.js'
 import { hashPassword } from '../utils/hashGenerator.jsx'
@@ -10,9 +10,9 @@ export default function Register() {
     const [username, setUsername] = React.useState("")
     const [password, setPassword] = React.useState("")
     const [repeated, setRepeated] = React.useState("")
-    const navigate = useNavigate()
-    const loginRedirect = () => {navigate('/login')}
-    const homeRedirect = () => {navigate('/home')}
+    const navigate = useNavigate(); const location = useLocation()
+    const loginRedirect = () => {navigate('/login', {state: {user: location.state.user}})}
+    const homeRedirect = () => {navigate('/home', {state: {user: location.state.user}})}
     const handleSubmit = async (e) => {
         e.preventDefault()
         if (username !== "" & password !== "" & repeated !== "") {
@@ -30,11 +30,11 @@ export default function Register() {
                 console.log('User already exist!')
             }
             setUsername(""); setPassword(""); setRepeated("")
-        }
-        else {
+        } else {
             // handle locking button if not all fields contain data
         }
     }
+    
     return (
         <div>
             <form onSubmit={handleSubmit}>
