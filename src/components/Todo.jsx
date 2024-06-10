@@ -17,8 +17,20 @@ export default function Todo({todo, className})
         await updateDoc(doc(db, "todos", todo.id), {completed: !todo.completed})
     }
     const addLabel = async (todo) => {
-        todo.labels.push(window.prompt("Enter new label: "))
-        await updateDoc(doc(db, "todos", todo.id), {labels: todo.labels})
+        let unique = true
+        function findIndex(elem) {
+            if (response === elem) {
+                unique = false
+            }
+        }
+        let response = window.prompt("Enter new label: ")
+        if (response !== null & response !== '') {
+            todo.labels.forEach(findIndex)
+            if (unique) {
+                todo.labels.push(response)
+                await updateDoc(doc(db, "todos", todo.id), {labels: todo.labels})
+            }
+        }
     }
     const deleteLabel = async (todo, label) => {
         let index
@@ -53,7 +65,9 @@ export default function Todo({todo, className})
     const handlePriorityChange = (e) => {
         e.preventDefault()
         todo.priority = 0
-        setNewPriority(e.target.value)
+        if (e.target.value >= 0) {
+            setNewPriority(e.target.value)
+        }
     }
 
     return (
@@ -61,7 +75,7 @@ export default function Todo({todo, className})
             <div> <input type='text' value={todo.title === "" ? newTitle : todo.title} onChange={handleTitleChange}/> </div>
             <div> <input type='text' value={todo.description === "" ? newDescription : todo.description} onChange={handleDescriptionChange}/> </div>
             <div> <input type='datetime-local' value={todo.date === "" ? newDate : todo.date} onChange={handleDateChange}/> </div>
-            <div> <input type='number' value={todo.priority === 0 ? newPriority : todo.priority} onChange={handlePriorityChange}/> </div>
+            <div> <input type='number' min='0' value={todo.priority === 0 ? newPriority : todo.priority} onChange={handlePriorityChange}/> </div>
             <div> {todo.labels.map((label) => (
                 <button key={Math.random()} onClick={() => deleteLabel(todo, label)}> {label} </button>
             ))}
@@ -69,8 +83,8 @@ export default function Todo({todo, className})
             <div>
                 <button onClick={() => toggleComplete(todo)}> Toggle state </button>
                 <button onClick={() => handleEdit(todo, newTitle, newDescription, newDate, newPriority)}> Edit </button>
-                <button onClick={() => handleDelete(todo.id)}> Delete </button>
                 <button onClick={() => addLabel(todo)}> Add label </button>
+                <button onClick={() => handleDelete(todo.id)}> Delete </button>
             </div>
         </div>
     )

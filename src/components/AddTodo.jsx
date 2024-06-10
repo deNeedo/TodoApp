@@ -17,9 +17,9 @@ export default function AddTodo({user}) {
 
     return (
         <form onSubmit={handleSubmit}>
-            <div> <input type='text' placeholder='Title...' value={title} onChange={(e) => setTitle(e.target.value)}/> </div>
-            <div> <input type='text' placeholder='Description...' value={description} onChange={(e) => setDescription(e.target.value)}/> </div>
-            <div> <input type='datetime-local' value={date} onChange={(e) => setDate(e.target.value)}/> </div>
+            <div> <input type='text' placeholder='Title...' value={title} onChange={(e) => setTitle(e.target.value)} required/> </div>
+            <div> <input type='text' placeholder='Description...' value={description} onChange={(e) => setDescription(e.target.value)} required/> </div>
+            <div> <input type='datetime-local' value={date} onChange={(e) => setDate(e.target.value)} required/> </div>
             <div> <button> Add Todo </button> </div>
         </form>
     ) 
