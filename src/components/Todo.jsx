@@ -1,20 +1,45 @@
 import React, { useState } from 'react'
-import './style/Todo.css'
 import { db } from '../firebase.js'
-import { doc, updateDoc, deleteDoc, getDocs } from 'firebase/firestore'
+import { doc, updateDoc, deleteDoc } from 'firebase/firestore'
 
-export default function Todo({todo, className})
+export default function Todo({ todo, className, updateTodos })
 {
     const [newTitle, setNewTitle] = useState(todo.title)
     const [newDescription, setNewDescription] = useState(todo.description)
     const [newDate, setNewDate] = useState(todo.date)
     const [newPriority, setNewPriority] = useState(todo.priority)
 
+    const convertInt = (priority) => {
+        let temp = ''; let flag = true
+        for (let m = 0; m < priority.length; m++) {
+            if (priority[m] != 0) {
+                flag = false
+            }
+            if (flag & priority[m] == 0) {
+                continue
+            } else {
+                temp += priority[m]
+            }
+        }
+        if (temp == '') {
+            return 0
+        } else {
+            return temp
+        }
+    }
+
     const handleEdit = async (todo, title, description, date, priority) => {
-        await updateDoc(doc(db, "todos", todo.id), {title: title, description: description, date: date, priority: priority})
+        if (title !== '') {
+            await updateDoc(doc(db, "todos", todo.id), {title: title, description: description, date: date, priority: priority})
+            updateTodos()
+        }
+        else {
+            console.log('You need to provide title for your todo!')
+        }
     }
     const toggleComplete = async (todo) => {
         await updateDoc(doc(db, "todos", todo.id), {completed: !todo.completed})
+        updateTodos()
     }
     const addLabel = async (todo) => {
         let unique = true
@@ -29,6 +54,7 @@ export default function Todo({todo, className})
             if (unique) {
                 todo.labels.push(response)
                 await updateDoc(doc(db, "todos", todo.id), {labels: todo.labels})
+                updateTodos()
             }
         }
     }
@@ -42,10 +68,14 @@ export default function Todo({todo, className})
         todo.labels.forEach(findIndex)
         todo.labels.splice(index, 1)
         await updateDoc(doc(db, "todos", todo.id), {labels: todo.labels})
+        updateTodos()
     }
     const handleDelete = async (id) => {
         let response = window.confirm("Are you sure?")
-        if (response) {await deleteDoc(doc(db, "todos", id))}
+        if (response) {
+            await deleteDoc(doc(db, "todos", id))
+            updateTodos()
+        }
     }
     const handleTitleChange = (e) => {
         e.preventDefault()
@@ -65,9 +95,7 @@ export default function Todo({todo, className})
     const handlePriorityChange = (e) => {
         e.preventDefault()
         todo.priority = 0
-        if (e.target.value >= 0) {
-            setNewPriority(e.target.value)
-        }
+        setNewPriority(convertInt(e.target.value))
     }
 
     return (
