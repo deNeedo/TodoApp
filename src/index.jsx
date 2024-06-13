@@ -1,10 +1,11 @@
 import React, { StrictMode } from 'react'
 import ReactDOM from 'react-dom/client'
-import { BrowserRouter, Routes, Route, Navigate} from 'react-router-dom'
-import './index.css'
-import Home from './components/Home.jsx'
-import Login from './components/Login.jsx'
-import Register from './components/Register.jsx'
+import { BrowserRouter, Route, Routes, Navigate } from 'react-router-dom'
+
+import Home from './components/pages/Home.jsx'
+import Login from './components/pages/Login.jsx'
+import Register from './components/pages/Register.jsx'
+import Admin from './components/pages/Admin.jsx'
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
@@ -15,12 +16,8 @@ root.render(
                 <Route path="/home" element={<Home />} />
                 <Route path="/login" element={<Login />} />
                 <Route path="/register" element={<Register />} />
-                {/* <Route path="/password-reset" element={<PasswordReset/>} />
-                <Route path="/terms" element={<Terms/>} />
-                <Route path="/employee-login" element={<EmployeeLogin/>} />
-                <Route path="/employee-register" element={<EmployeeRegister/>} />
-                <Route path="/orders" element={<Orders/>} /> */}
+                <Route path="/admin" element={<Admin />} />
             </Routes>
         </BrowserRouter>
-    </StrictMode>,
+    </StrictMode>
 )
