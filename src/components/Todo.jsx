@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import { useLocation } from 'react-router-dom'
 import { db } from '../firebase.js'
 import { doc, collection, addDoc, updateDoc, deleteDoc } from 'firebase/firestore'
@@ -166,7 +166,7 @@ export default function Todo({ projects, project, todo, className, updateProject
                 <button onClick={() => addLabel(todo)}> Add label </button>
                 <button onClick={() => manageProject(project, selectedProject, todo)}> {project === undefined ? 'Move to project' : 'Remove from project'} </button>
                 <select value={selectedProject} onChange={selectProject}> {projects.map((project) => (
-                    <option value={project}> {project.title} </option>
+                    <option key={Math.random()} value={project}> {project.title} </option>
                 ))}
                 </select>
                 <button onClick={() => handleDelete(todo.id)}> Delete </button>

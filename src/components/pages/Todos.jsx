@@ -5,6 +5,7 @@ import { collection, getDocs } from 'firebase/firestore'
 
 import AddTodo from '../AddTodo.jsx'
 import Todo from '../Todo.jsx'
+import SearchBar from '../SearchBar.jsx'
 
 import StyleTodo from '../style/Todo.module.css'
 
@@ -88,7 +89,7 @@ export default function Todos() {
         setProjects(array)
     }
 
-    const fetchTodos = async () => {{
+    const fetchTodos = async () => {
         let array = []
         const querySnapshot = await getDocs(collection(db, 'todos'));
         querySnapshot.forEach((doc) => {
@@ -97,10 +98,82 @@ export default function Todos() {
             }
         })
         setTodos(array); setSort(true)
-    }}
+    }
+
+    const searchResults = async (input, type) => {
+        let array = []
+        if (location.state.project === undefined) {
+            const querySnapshot = await getDocs(collection(db, 'todos'));
+            querySnapshot.forEach((doc) => {
+                if (doc.data().user === location.state.user) {
+                    if (type === 'title') {
+                        if ((doc.data().title).includes(input)) {
+                            // console.log({id: doc.id, ...doc.data()})
+                            array.push({id: doc.id, ...doc.data()})
+                        }
+                    } else if (type === 'description') {
+                        if ((doc.data().description).includes(input)) {
+                            array.push({id: doc.id, ...doc.data()})
+                        }
+                    } else if (type === 'label') {
+                        if (input == '') {
+                            array.push({id: doc.id, ...doc.data()})
+                        } else {
+                            let labels = doc.data().labels
+                            for (let m = 0; m < labels.length; m++) {
+                                if (labels[m].includes(input)) {
+                                    array.push({id: doc.id, ...doc.data()})
+                                    break
+                                }
+                            }
+                        }
+                    } else if (type === 'priority') {
+                        let priority = doc.data().priority + ""
+                        if (priority.includes(input)) {
+                            array.push({id: doc.id, ...doc.data()})
+                        }
+                    }
+                }
+            })
+        } else {
+            const querySnapshot = await getDocs(collection(db, 'projects'));
+            querySnapshot.forEach((doc) => {
+                for (let m = 0; m < (doc.data().todos).length; m++) {
+                    let todo = doc.data().todos[m]
+                    if (type === 'title') {
+                        if ((todo.title).includes(input)) {
+                            array.push({id: todo.id, ...todo})
+                        }
+                    } else if (type === 'description') {
+                        if ((todo.description).includes(input)) {
+                            array.push({id: todo.id, ...todo})
+                        }
+                    } else if (type === 'label') {
+                        if (input == '') {
+                            array.push({id: todo.id, ...todo})
+                        } else {
+                            for (let n = 0; n < (todo.labels).length; n++) {
+                                if (todo.labels[n].includes(input)) {
+                                    array.push({id: todo.id, ...todo})
+                                    break
+                                }
+                            }
+                        }
+                    } else if (type === 'priority') {
+                        let priority = todo.priority + ""
+                        if (priority.includes(input)) {
+                            array.push({id: todo.id, ...todo})
+                        }
+                    }
+                }
+            })
+        }
+        setTodos(array)
+    }
 
     return (
         <div>
+            <SearchBar updateTodos={searchResults}/>
             <AddTodo user={location.state.user} project={location.state.project} updateTodos={fetchTodos}/>
             <select value={sortType} onChange={changeSort}>
                 <option value=''> --- </option>
