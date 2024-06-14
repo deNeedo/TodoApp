@@ -1,16 +1,22 @@
 import React, { useState } from 'react'
 import { db } from '../firebase.js'
-import { collection, addDoc } from 'firebase/firestore'
+import { collection, addDoc, updateDoc } from 'firebase/firestore'
 
-export default function AddTodo({ user, updateTodos }) {
+export default function AddTodo({ user, project, updateTodos }) {
     const [title, setTitle] = useState('')
     const [description, setDescription] = useState('')
     const [date, setDate] = useState('')
 
     const handleSubmit = async (e) => {
         e.preventDefault()
-        await addDoc(collection(db, 'todos'), {user: user, title: title, description: description, date: date, completed: false, priority: 0, labels: []})
-        setTitle(''); setDescription(''); setDate(''); updateTodos()
+        if (project === undefined) {
+            await addDoc(collection(db, 'todos'), {user: user, title: title, description: description, date: date, completed: false, priority: 0, labels: []})
+            setTitle(''); setDescription(''); setDate(''); updateTodos()
+        } else {
+            
+            await updateDoc((db, 'projects'), {})
+            setTitle(''); setDescription(''); setDate(''); updateTodos()
+        }
     }
 
     return (
