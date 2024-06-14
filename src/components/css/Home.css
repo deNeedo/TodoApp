@@ -1,0 +1,146 @@
+/* Home.css */
+body {
+    background: #f0f0f0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+    font-family: 'Montserrat', sans-serif;
+}
+
+.container {
+    margin-top: 50px;
+    text-align: center;
+    background: white;
+    padding: 40px;
+    border-radius: 10px;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+    position: relative;
+    z-index: 1;
+}
+
+/* .button-container {
+    margin: 20px 0;
+}
+
+.btn-primary, .btn-secondary {
+    width: 200px;
+    padding: 10px;
+    font-size: 18px;
+} */
+
+button {
+    width: 100%;
+    background-color: #4CAF50;
+    color: white;
+    padding: 14px 20px;
+    margin: 4px 0; /* Reduced margin between buttons */
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+button:hover {
+    background-color: #45a049;
+    transform: scale(1.05);
+}
+
+.fade-in {
+    animation: fadeIn 1s ease-in-out;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes wave {
+    0% { transform: rotate(0deg); }
+    10% { transform: rotate(14deg); }
+    20% { transform: rotate(-8deg); }
+    30% { transform: rotate(14deg); }
+    40% { transform: rotate(-4deg); }
+    50% { transform: rotate(10deg); }
+    60% { transform: rotate(0deg); }
+    100% { transform: rotate(0deg); }
+}
+
+.title {
+    font-size: 48px;
+    color: #333;
+    margin-bottom: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-transform: uppercase;
+    font-weight: 700;
+}
+
+.title .hand {
+    display: inline-block;
+    animation: wave 2s infinite;
+    transform-origin: 70% 70%;
+    margin-left: 10px;
+}
+
+.background-shapes {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    z-index: 0;
+}
+
+.shape {
+    position: absolute;
+    border-radius: 50%;
+}
+
+.shape1 {
+    width: 200px;
+    height: 200px;
+    top: -50px;
+    left: -50px;
+    background: rgba(255, 182, 193, 0.4); /* Light Pink */
+}
+
+.shape2 {
+    width: 300px;
+    height: 300px;
+    bottom: -150px;
+    right: -100px;
+    background: rgba(173, 216, 230, 0.4); /* Light Blue */
+}
+
+.shape3 {
+    width: 150px;
+    height: 150px;
+    top: 200px;
+    left: 50px;
+    background: rgba(144, 238, 144, 0.4); /* Light Green */
+}
+
+.shape4 {
+    width: 100px;
+    height: 100px;
+    bottom: 100px;
+    left: 200px;
+    background: rgba(255, 223, 186, 0.4); /* Light Peach */
+}
+
+.shape5 {
+    width: 250px;
+    height: 250px;
+    top: 100px;
+    right: 200px;
+    background: rgba(255, 255, 224, 0.4); /* Light Yellow */
+}

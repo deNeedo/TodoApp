@@ -4,6 +4,7 @@ import { db } from '../../firebase.js'
 import { collection, addDoc } from 'firebase/firestore'
 import { hashPassword } from '../../utils/hashGenerator.jsx'
 import { registerValidator } from '../../utils/registerValidator.jsx'
+import '../css/Register.css';
 
 export default function Register() {
     const navigate = useNavigate(); const location = useLocation()
@@ -37,15 +38,43 @@ export default function Register() {
     }
     
     return (
-        <div>
-            <form onSubmit={handleSubmit}>
-                <div> <input type='test' placeholder='Enter username...' value={username} onChange={(e) => setUsername(e.target.value)} required/> </div>
-                <div> <input type='test' placeholder='Enter password...' value={password} onChange={(e) => setPassword(e.target.value)} required/> </div>
-                <div> <input type='test' placeholder='Repeat password...' value={repeated} onChange={(e) => setRepeated(e.target.value)} required/> </div>
-                <div> <button> SUBMIT </button> </div>
-            </form>
-            <div> <button onClick={login}> LOGIN </button> </div>
-            <div> <button onClick={home}> HOME  </button> </div>
+        <div className="main-container">
+            <div className="background-shapes">
+                <div className="shape shape1"></div>
+                <div className="shape shape2"></div>
+                <div className="shape shape3"></div>
+                <div className="shape shape4"></div>
+                <div className="shape shape5"></div>
+            </div>
+            <div className="container form-container">
+                <div className="title">
+                    REGISTER
+                    <span className="emoji">👇🏼</span>
+                </div>
+                <form onSubmit={handleSubmit}>
+                    <div>
+                        <label>Username</label>
+                        <input type="text" placeholder="Enter username..." value={username} onChange={(e) => setUsername(e.target.value)} required />
+                    </div>
+                    <div>
+                        <label>Password</label>
+                        <input type="password" placeholder="Enter password..." value={password} onChange={(e) => setPassword(e.target.value)} required />
+                    </div>
+                    <div>
+                        <label>Repeat Password</label>
+                        <input type="password" placeholder="Repeat password..." value={repeated} onChange={(e) => setRepeated(e.target.value)} required />
+                    </div>
+                    <div className="submit-container">
+                        <button type="submit">SUBMIT</button>
+                    </div>
+                </form>
+                <div className="button-container">
+                    <button onClick={login}>LOGIN</button>
+                </div>
+                <div className="button-container">
+                    <button onClick={home}>HOME</button>
+                </div>
+            </div>
         </div>
-    )
+    );
 }

@@ -1,63 +1,107 @@
-import React, { useEffect, useState } from 'react'
-import { useNavigate, useLocation } from 'react-router-dom'
-import { db } from '../../firebase.js'
-import { collection, getDocs } from 'firebase/firestore'
+import React, { useEffect, useState } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
+import { db } from '../../firebase.js';
+import { collection, getDocs } from 'firebase/firestore';
+import 'bootstrap/dist/css/bootstrap.min.css';
+import '../css/Home.css';
+
 
 export default function Home() {
-    const navigate = useNavigate(); const location = useLocation()
+    const navigate = useNavigate();
+    const location = useLocation();
     
-    const [projects, setProjects] = useState([])
-    const [todos, setTodos] = useState([])
+    const [projects, setProjects] = useState([]);
+    const [todos, setTodos] = useState([]);
     const [user, setUser] = useState(location.state !== null ? location.state.user : null);
 
-    const loginRedirect = () => {user === null ? navigate('/login', {state: {user: user}}) : console.log("Already logged in!")}
-    const registerRedirect = () => {user === null ? navigate('/register', {state: {user: user}}) : console.log("Already logged in!")}
-    const projectsRedirect = () => {navigate('/projects', {state: {user: user, projects: projects, todos: todos}})}
-    const todosRedirect = () => {navigate('/todos', {state: {user: user, projects: projects, todos: todos}})}
-    const logout = () => {setUser(null)}
+    const loginRedirect = () => {
+        user === null ? navigate('/login', { state: { user: user } }) : console.log("Already logged in!");
+    };
+
+    const registerRedirect = () => {
+        user === null ? navigate('/register', { state: { user: user } }) : console.log("Already logged in!");
+    };
+
+    const projectsRedirect = () => {
+        navigate('/projects', { state: { user: user, projects: projects, todos: todos } });
+    };
+
+    const todosRedirect = () => {
+        navigate('/todos', { state: { user: user, projects: projects, todos: todos } });
+    };
+
+    const logout = () => {
+        setUser(null);
+    };
 
     useEffect(() => {
         if (user === null) {
-            setUser(null)
+            setUser(null);
         } else {
-            fetchProjects()
-            fetchTodos()
+            fetchProjects();
+            fetchTodos();
         }
-    }, [user])
+    }, [user]);
 
     const fetchProjects = async () => {
-        let array = []
+        let array = [];
         const querySnapshot = await getDocs(collection(db, 'projects'));
         querySnapshot.forEach((doc) => {
             if (doc.data().user === location.state.user) {
-                array.push({id: doc.id, ...doc.data()})
+                array.push({ id: doc.id, ...doc.data() });
             }
-        })
-        setProjects(array)
-    }
+        });
+        setProjects(array);
+    };
 
-    const fetchTodos = async () => {{
-        let array = []
+    const fetchTodos = async () => {
+        let array = [];
         const querySnapshot = await getDocs(collection(db, 'todos'));
         querySnapshot.forEach((doc) => {
             if (doc.data().user === location.state.user) {
-                array.push({id: doc.id, ...doc.data()})
+                array.push({ id: doc.id, ...doc.data() });
             }
-        })
-        setTodos(array)
-    }}
+        });
+        setTodos(array);
+    };
 
     return (
-        user !== null ?
-        <div>
-            <div> <button onClick={projectsRedirect}> PROJECTS </button> </div>
-            <div> <button onClick={todosRedirect}> TODOS </button> </div>
-            <div> <button onClick={logout}> LOGOUT </button> </div>
+        <div className="main-container">
+            <div className="background-shapes">
+                <div className="shape shape1"></div>
+                <div className="shape shape2"></div>
+                <div className="shape shape3"></div>
+                <div className="shape shape4"></div>
+                <div className="shape shape5"></div>
+            </div>
+            <div className="container fade-in">
+                <div className="title">
+                    TODO APP
+                    <span className="hand">👋🏼</span>
+                </div>
+                {user !== null ? (
+                    <>
+                        <div className="button-container">
+                            <button onClick={projectsRedirect}>PROJECTS</button>
+                        </div>
+                        <div className="button-container">
+                            <button onClick={todosRedirect}>TODOS</button>
+                        </div>
+                        <div className="button-container">
+                            <button onClick={logout}>LOGOUT</button>
+                        </div>
+                    </>
+                ) : (
+                    <>
+                        <div className="button-container">
+                            <button onClick={loginRedirect}>LOGIN HERE</button>
+                        </div>
+                        <div className="button-container">
+                            <button onClick={registerRedirect}>REGISTER</button>
+                        </div>
+                    </>
+                )}
+            </div>
         </div>
-        :
-        <div>
-            <div> <button onClick={loginRedirect}> LOGIN </button> </div>
-            <div> <button onClick={registerRedirect}> REGISTER </button> </div>
-        </div>
-    )
+    );
 }
