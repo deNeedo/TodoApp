@@ -108,7 +108,6 @@ export default function Todos() {
                 if (doc.data().user === location.state.user) {
                     if (type === 'title') {
                         if ((doc.data().title).includes(input)) {
-                            // console.log({id: doc.id, ...doc.data()})
                             array.push({id: doc.id, ...doc.data()})
                         }
                     } else if (type === 'description') {
@@ -138,31 +137,33 @@ export default function Todos() {
         } else {
             const querySnapshot = await getDocs(collection(db, 'projects'));
             querySnapshot.forEach((doc) => {
-                for (let m = 0; m < (doc.data().todos).length; m++) {
-                    let todo = doc.data().todos[m]
-                    if (type === 'title') {
-                        if ((todo.title).includes(input)) {
-                            array.push({id: todo.id, ...todo})
-                        }
-                    } else if (type === 'description') {
-                        if ((todo.description).includes(input)) {
-                            array.push({id: todo.id, ...todo})
-                        }
-                    } else if (type === 'label') {
-                        if (input == '') {
-                            array.push({id: todo.id, ...todo})
-                        } else {
-                            for (let n = 0; n < (todo.labels).length; n++) {
-                                if (todo.labels[n].includes(input)) {
-                                    array.push({id: todo.id, ...todo})
-                                    break
+                if (doc.data().user === location.state.user) {
+                    for (let m = 0; m < (doc.data().todos).length; m++) {
+                        let todo = doc.data().todos[m]
+                        if (type === 'title') {
+                            if ((todo.title).includes(input)) {
+                                array.push({id: todo.id, ...todo})
+                            }
+                        } else if (type === 'description') {
+                            if ((todo.description).includes(input)) {
+                                array.push({id: todo.id, ...todo})
+                            }
+                        } else if (type === 'label') {
+                            if (input == '') {
+                                array.push({id: todo.id, ...todo})
+                            } else {
+                                for (let n = 0; n < (todo.labels).length; n++) {
+                                    if (todo.labels[n].includes(input)) {
+                                        array.push({id: todo.id, ...todo})
+                                        break
+                                    }
                                 }
                             }
-                        }
-                    } else if (type === 'priority') {
-                        let priority = todo.priority + ""
-                        if (priority.includes(input)) {
-                            array.push({id: todo.id, ...todo})
+                        } else if (type === 'priority') {
+                            let priority = todo.priority + ""
+                            if (priority.includes(input)) {
+                                array.push({id: todo.id, ...todo})
+                            }
                         }
                     }
                 }
