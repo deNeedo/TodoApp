@@ -20,16 +20,6 @@ body {
     z-index: 1;
 }
 
-/* .button-container {
-    margin: 20px 0;
-}
-
-.btn-primary, .btn-secondary {
-    width: 200px;
-    padding: 10px;
-    font-size: 18px;
-} */
-
 button {
     width: 100%;
     background-color: #4CAF50;
@@ -81,6 +71,7 @@ button:hover {
     justify-content: center;
     text-transform: uppercase;
     font-weight: 700;
+    white-space: nowrap;  /* Prevents the title from wrapping to the next line */
 }
 
 .title .hand {
@@ -143,4 +134,33 @@ button:hover {
     top: 100px;
     right: 200px;
     background: rgba(255, 255, 224, 0.4); /* Light Yellow */
+}
+
+.divider {
+    margin: 20px 0;
+    border-top: 1px solid #ccc;
+    position: relative;
+}
+
+.divider-text {
+    position: absolute;
+    top: -10px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: white;
+    padding: 0 10px;
+    color: #666;
+    font-size: 14px;
+}
+
+.footer {
+    position: absolute;
+    bottom: 10px;
+    text-align: center;
+    width: 100%;
+    color: #666;
+    font-size: 14px;
+    z-index: 1;
+    left: 50%;
+    transform: translateX(-50%);
 }

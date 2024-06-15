@@ -1,4 +1,4 @@
-/* Register.css */
+/* Login.css */
 body {
     background: #f0f0f0;
     display: flex;
@@ -7,8 +7,6 @@ body {
     height: 100vh;
     margin: 0;
     font-family: 'Montserrat', sans-serif;
-    position: relative;
-    overflow: hidden; /* Hide scroll bars */
 }
 
 .container {
@@ -23,10 +21,27 @@ body {
     width: 400px;
 }
 
+.title {
+    font-size: 36px;
+    color: #333;
+    margin-bottom: 30px;
+    text-transform: uppercase;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.title .emoji {
+    display: inline-block;
+    animation: bounce 2s infinite;
+    margin-left: 10px;
+}
+
 input[type="text"], input[type="password"] {
     width: 100%;
-    padding: 12px;
-    margin: 10px 0;
+    padding: 15px;
+    margin: 10px 0 20px 0;
     display: inline-block;
     border: 1px solid #ccc;
     border-radius: 4px;
@@ -39,7 +54,7 @@ button {
     background-color: #4CAF50;
     color: white;
     padding: 14px 20px;
-    margin: 4px 0; /* Reduced margin between buttons */
+    margin: 8px;
     border: none;
     border-radius: 4px;
     cursor: pointer;
@@ -52,81 +67,17 @@ button:hover {
     transform: scale(1.05);
 }
 
-.login-button {
-    margin-top: 10px;
-    font-size: 14px;
+.submit-container {
+    margin-top: 400px; /* Increased gap above the submit button */
 }
 
-.divider {
-    margin: 20px 0;
-    border-top: 1px solid #ccc;
-    position: relative;
-}
-
-.divider-text {
-    position: absolute;
-    top: -10px;
-    left: 50%;
-    transform: translateX(-50%);
-    background: white;
-    padding: 0 10px;
+.footer {
+    text-align: center;
+    width: 100%;
     color: #666;
     font-size: 14px;
-}
-
-.submit-container {
-    margin-top: 40px; /* Increased gap above the submit button */
-}
-
-@keyframes fadeIn {
-    from {
-        opacity: 0;
-    }
-    to {
-        opacity: 1;
-    }
-}
-
-@keyframes bounce {
-    0%, 20%, 50%, 80%, 100% {
-        transform: translateY(0);
-    }
-    40% {
-        transform: translateY(-30px);
-    }
-    60% {
-        transform: translateY(-15px);
-    }
-}
-
-.title {
-    font-size: 48px;
-    color: #333;
-    margin-bottom: 30px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    text-transform: uppercase;
-    font-weight: 700;
-}
-
-.title .emoji {
-    display: inline-block;
-    animation: bounce 2s infinite;
-    margin-left: 10px;
-}
-
-label {
-    text-align: left;
-    display: block;
-    margin: 10px 0 5px;
-    font-size: 16px;
-    color: #333;
-}
-
-.error-message {
-    color: red;
-    margin: 10px 0;
+    position: absolute; /* Make footer stay at the bottom of the screen */
+    bottom: 10px;
 }
 
 .background-shapes {
@@ -136,7 +87,7 @@ label {
     width: 100%;
     height: 100%;
     overflow: hidden;
-    z-index: 0; /* Lower z-index to ensure the home button is on top */
+    z-index: 0;
 }
 
 .shape {
@@ -225,11 +176,53 @@ label {
     }
 }
 
-.footer {
-    text-align: center;
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes bounce {
+    0%, 20%, 50%, 80%, 100% {
+        transform: translateY(0);
+    }
+    40% {
+        transform: translateY(-30px);
+    }
+    60% {
+        transform: translateY(-15px);
+    }
+}
+
+.divider {
+    margin: 20px 0;
+    border-top: 1px solid #ccc;
+    position: relative;
     width: 100%;
+}
+
+.divider-text {
+    position: absolute;
+    top: -10px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: white;
+    padding: 0 10px;
     color: #666;
     font-size: 14px;
-    position: absolute; /* Make footer stay at the bottom of the screen */
-    bottom: 10px;
+}
+
+label {
+    text-align: left;
+    display: block;
+    margin: 10px 0 5px;
+    font-size: 16px;
+    color: #333;
+}
+
+.form-container > div {
+    margin-bottom: 20px; /* Add spacing between form elements and buttons */
 }

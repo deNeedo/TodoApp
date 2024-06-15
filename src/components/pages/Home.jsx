@@ -96,12 +96,18 @@ export default function Home() {
                         <div className="button-container">
                             <button onClick={loginRedirect}>LOGIN HERE</button>
                         </div>
+                        <div className="divider">
+                            <span className="divider-text">or</span>
+                        </div>
                         <div className="button-container">
                             <button onClick={registerRedirect}>REGISTER</button>
                         </div>
                     </>
                 )}
             </div>
+            <footer className="footer">
+                made by Jeremi Sadkowski, Jacek Kudrys & Stanisław Pilch
+            </footer>
         </div>
     );
 }
