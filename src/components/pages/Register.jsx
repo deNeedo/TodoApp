@@ -7,38 +7,61 @@ import { registerValidator } from '../../utils/registerValidator.jsx'
 import '../css/Register.css';
 
 export default function Register() {
-    const navigate = useNavigate(); const location = useLocation()
+    const navigate = useNavigate();
+    const location = useLocation();
 
-    const [username, setUsername] = useState('')
-    const [password, setPassword] = useState('')
-    const [repeated, setRepeated] = useState('')
+    const [username, setUsername] = useState('');
+    const [password, setPassword] = useState('');
+    const [repeated, setRepeated] = useState('');
+    const [errorMessage, setErrorMessage] = useState('');
+
+    const login = () => { navigate('/login', { state: { user: location.state.user } }) };
+    const home = () => { navigate('/home', { state: { user: location.state.user } }) };
     
-    const login = () => {navigate('/login', {state: {user: location.state.user}})}
-    const home = () => {navigate('/home', {state: {user: location.state.user}})}
     const handleSubmit = async (e) => {
-        e.preventDefault()
-        if (username !== '' & password !== '' & repeated !== '') {
-            let response = await registerValidator(username, password, repeated)
-            if (response == 0) {
-                let hash = await hashPassword(password)
-                await addDoc(collection(db, 'users'), {username: username, password: hash})
-                console.log('Successfully registered!')
-                home()
-            } else if (response == 1) {
-                console.log('Provided passwords don\'t match!')
-            } else if (response == 2) {
-                console.log('Password doesn\'t meet the requirements!')
-            } else if (response == 3) {
-                console.log('User already exist!')
-            }
-            setUsername(""); setPassword(""); setRepeated("")
-        } else {
-            // handle locking button if not all fields contain data
+        e.preventDefault();
+        setErrorMessage('');
+
+        if (password.length < 8) {
+            setErrorMessage('Password does not have at least 8 characters.');
+            return;
         }
-    }
-    
+        if (!/\d/.test(password)) {
+            setErrorMessage('Password needs to have at least one digit.');
+            return;
+        }
+        if (password !== repeated) {
+            setErrorMessage('Provided passwords do not match.');
+            return;
+        }
+
+        if (username !== '' && password !== '' && repeated !== '') {
+            let response = await registerValidator(username, password, repeated);
+            if (response === 0) {
+                let hash = await hashPassword(password);
+                await addDoc(collection(db, 'users'), { username: username, password: hash });
+                console.log('Successfully registered!');
+                home();
+            } else if (response === 1) {
+                setErrorMessage('Provided passwords don\'t match!');
+            } else if (response === 2) {
+                setErrorMessage('Password doesn\'t meet the requirements!');
+            } else if (response === 3) {
+                setErrorMessage('User already exists!');
+            }
+            setUsername('');
+            setPassword('');
+            setRepeated('');
+        } else {
+            setErrorMessage('Please fill out all fields.');
+        }
+    };
+
     return (
         <div className="main-container">
+            <button className="home-button" onClick={home}>
+                <span className="arrow">←</span> HOME
+            </button>
             <div className="background-shapes">
                 <div className="shape shape1"></div>
                 <div className="shape shape2"></div>
@@ -51,6 +74,7 @@ export default function Register() {
                     REGISTER
                     <span className="emoji">👇🏼</span>
                 </div>
+                {errorMessage && <div className="error-message">{errorMessage}</div>}
                 <form onSubmit={handleSubmit}>
                     <div>
                         <label>Username</label>
@@ -68,11 +92,11 @@ export default function Register() {
                         <button type="submit">SUBMIT</button>
                     </div>
                 </form>
-                <div className="button-container">
-                    <button onClick={login}>LOGIN</button>
+                <div className="divider">
+                    <span className="divider-text">or</span>
                 </div>
                 <div className="button-container">
-                    <button onClick={home}>HOME</button>
+                    <button className="login-button" onClick={login}>LOGIN</button>
                 </div>
             </div>
         </div>
