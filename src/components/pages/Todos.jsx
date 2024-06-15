@@ -91,12 +91,24 @@ export default function Todos() {
 
     const fetchTodos = async () => {
         let array = []
-        const querySnapshot = await getDocs(collection(db, 'todos'));
-        querySnapshot.forEach((doc) => {
-            if (doc.data().user === location.state.user) {
-                array.push({id: doc.id, ...doc.data()})
-            }
-        })
+        if (location.state.project === undefined) {
+            const querySnapshot = await getDocs(collection(db, 'todos'));
+            querySnapshot.forEach((doc) => {
+                if (doc.data().user === location.state.user) {
+                    array.push({id: doc.id, ...doc.data()})
+                }
+            })
+        } else {
+            const querySnapshot = await getDocs(collection(db, 'projects'));
+            querySnapshot.forEach((doc) => {
+                if (doc.data().user === location.state.user) {
+                    for (let m = 0; m < (doc.data().todos).length; m++) {
+                        let todo = doc.data().todos[m]
+                        array.push({id: todo.id, ...todo})
+                    }
+                }
+            })
+        }
         setTodos(array); setSort(true)
     }
 

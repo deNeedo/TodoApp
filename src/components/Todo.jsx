@@ -32,8 +32,25 @@ export default function Todo({ projects, project, todo, className, updateProject
 
     const handleEdit = async (todo, title, description, date, priority) => {
         if (title !== '') {
-            await updateDoc(doc(db, "todos", todo.id), {title: title, description: description, date: date, priority: priority})
-            updateTodos()
+            if (project === undefined) {
+                await updateDoc(doc(db, "todos", todo.id), {title: title, description: description, date: date, priority: priority})
+                updateTodos()
+            } else {
+                let index
+                function findIndex(elem, idx) {
+                    if (todo.id === elem.id) {
+                        index = idx
+                    }
+                }
+                project.todos.forEach(findIndex)
+                let obj = project.todos[index]
+                obj.title = title; obj.description = description; obj.date = date; obj.priority = priority
+                project.todos[index] = obj
+                await updateDoc(doc(db, "projects", project.id), {todos: project.todos})
+                updateProjects()
+                updateTodos()
+            }
+
         }
         else {
             console.log('You need to provide title for your todo!')
@@ -41,15 +58,32 @@ export default function Todo({ projects, project, todo, className, updateProject
     }
 
     const toggleComplete = async (todo) => {
-        await updateDoc(doc(db, "todos", todo.id), {completed: !todo.completed})
-        updateTodos()
+        if (project === undefined) {
+            await updateDoc(doc(db, "todos", todo.id), {completed: !todo.completed})
+            updateTodos()
+        } else {
+            let index
+            function findIndex(elem, idx) {
+                if (todo.id === elem.id) {
+                    index = idx
+                }
+            }
+            project.todos.forEach(findIndex)
+            let obj = project.todos[index]
+            obj.completed = !obj.completed
+            project.todos[index] = obj
+            await updateDoc(doc(db, "projects", project.id), {todos: project.todos})
+            updateProjects()
+            updateTodos()
+        }
+
     }
 
     const manageProject = async (project, selectedProject, todo) => {
-        let unique = true; let exists = false; let index
+        let unique = true; let index
         function findIndex(elem, idx) {
             if (todo.id === elem.id) {
-                unique = false; exists = true; index = idx
+                unique = false; index = idx
             }
         }
         if (project === undefined) {
@@ -66,20 +100,13 @@ export default function Todo({ projects, project, todo, className, updateProject
                 }
             }
         } else {
-            if (selectedProject !== undefined) {
-                selectedProject.todos.forEach(findIndex)
-                if (exists) {
-                    let todo = selectedProject.todos.splice(index, 1)[0]
-                    await updateDoc(doc(db, "projects", selectedProject.id), {todos: selectedProject.todos})
-                    updateProjects()
-                    await addDoc(collection(db, 'todos'), {user: location.state.user, title: todo.title, description: todo.description, date: todo.date, completed: todo.completed, priority: todo.priority, labels: todo.labels})
-                    updateTodos()
-                } else {
-                    console.log('Todo not present in this project!')
-                }
-            }
+            project.todos.forEach(findIndex)
+            let todo = project.todos.splice(index, 1)[0]
+            await updateDoc(doc(db, "projects", project.id), {todos: project.todos})
+            updateProjects()
+            await addDoc(collection(db, 'todos'), {user: location.state.user, title: todo.title, description: todo.description, date: todo.date, completed: todo.completed, priority: todo.priority, labels: todo.labels})
+            updateTodos()
         }
-        
     }
 
     const selectProject = (e) => {
@@ -88,10 +115,14 @@ export default function Todo({ projects, project, todo, className, updateProject
     }
 
     const addLabel = async (todo) => {
-        let unique = true
+        let unique = true; let index
         function findIndex(elem) {
-            if (response === elem) {
+            if (response == elem) {
                 unique = false
+            }
+        } function findTodo(elem, idx) {
+            if (todo.id === elem.id) {
+                index = idx
             }
         }
         let response = window.prompt("Enter new label: ")
@@ -99,8 +130,20 @@ export default function Todo({ projects, project, todo, className, updateProject
             todo.labels.forEach(findIndex)
             if (unique) {
                 todo.labels.push(response)
-                await updateDoc(doc(db, "todos", todo.id), {labels: todo.labels})
-                updateTodos()
+                if (project === undefined) {
+                    await updateDoc(doc(db, "todos", todo.id), {labels: todo.labels})
+                    updateTodos()
+                } else {
+                    console.log(index)
+                    project.todos.forEach(findTodo)
+                    console.log(index)
+                    let obj = project.todos[index]
+                    obj.labels = todo.labels
+                    project.todos[index] = obj
+                    await updateDoc(doc(db, "projects", project.id), {todos: project.todos})
+                    updateProjects()
+                    updateTodos()
+                } 
             }
         }
     }
@@ -114,15 +157,41 @@ export default function Todo({ projects, project, todo, className, updateProject
         }
         todo.labels.forEach(findIndex)
         todo.labels.splice(index, 1)
-        await updateDoc(doc(db, "todos", todo.id), {labels: todo.labels})
-        updateTodos()
+        if (project === undefined) {
+            await updateDoc(doc(db, "todos", todo.id), {labels: todo.labels})
+            updateTodos()
+        } else {
+            project.todos.forEach(findIndex)
+            let obj = project.todos[index]
+            obj.labels = todo.labels
+            project.todos[index] = obj
+            await updateDoc(doc(db, "projects", project.id), {todos: project.todos})
+            updateProjects()
+            updateTodos()
+        }
+
     }
 
     const handleDelete = async (id) => {
         let response = window.confirm("Are you sure?")
         if (response) {
-            await deleteDoc(doc(db, "todos", id))
-            updateTodos()
+            if (project === undefined) {
+                await deleteDoc(doc(db, "todos", id))
+                updateTodos()
+            } else {
+                let index
+                function findIndex(elem, idx) {
+                    if (todo.id === elem.id) {
+                        index = idx
+                    }
+                }
+                project.todos.forEach(findIndex)
+                project.todos.splice(index, 1)
+                await updateDoc(doc(db, "projects", project.id), {todos: project.todos})
+                updateProjects()
+                updateTodos()
+            }
+
         }
     }
     
@@ -151,6 +220,7 @@ export default function Todo({ projects, project, todo, className, updateProject
     }
 
     return (
+        project === undefined ?
         <div className={className}>
             <div> <input type='text' value={todo.title === '' ? newTitle : todo.title} onChange={handleTitleChange}/> </div>
             <div> <input type='text' value={todo.description === '' ? newDescription : todo.description} onChange={handleDescriptionChange}/> </div>
@@ -169,6 +239,28 @@ export default function Todo({ projects, project, todo, className, updateProject
                     <option key={Math.random()} value={project}> {project.title} </option>
                 ))}
                 </select>
+                <button onClick={() => handleDelete(todo.id)}> Delete </button>
+            </div>
+        </div>
+        :
+        <div className={className}>
+            <div> <input type='text' value={todo.title === '' ? newTitle : todo.title} onChange={handleTitleChange}/> </div>
+            <div> <input type='text' value={todo.description === '' ? newDescription : todo.description} onChange={handleDescriptionChange}/> </div>
+            <div> <input type='datetime-local' value={todo.date === '' ? newDate : todo.date} onChange={handleDateChange}/> </div>
+            <div> <input type='number' min='0' value={todo.priority === 0 ? newPriority : todo.priority} onChange={handlePriorityChange}/> </div>
+            <div> {todo.labels.map((label) => (
+                <button key={Math.random()} onClick={() => deleteLabel(todo, label)}> {label} </button>
+            ))}
+            </div>
+            <div>
+                <button onClick={() => toggleComplete(todo)}> Toggle state </button>
+                <button onClick={() => handleEdit(todo, newTitle, newDescription, newDate, newPriority)}> Edit </button>
+                <button onClick={() => addLabel(todo)}> Add label </button>
+                <button onClick={() => manageProject(project, undefined, todo)}> {project === undefined ? 'Move to project' : 'Remove from project'} </button>
+                {/* <select value={selectedProject} onChange={selectProject}> {projects.map((project) => (
+                    <option key={Math.random()} value={project}> {project.title} </option>
+                ))}
+                </select> */}
                 <button onClick={() => handleDelete(todo.id)}> Delete </button>
             </div>
         </div>
