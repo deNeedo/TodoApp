@@ -50,7 +50,6 @@ export default function Todo({ projects, project, todo, className, updateProject
                 updateProjects()
                 updateTodos()
             }
-
         }
         else {
             console.log('You need to provide title for your todo!')
@@ -58,6 +57,7 @@ export default function Todo({ projects, project, todo, className, updateProject
     }
 
     const toggleComplete = async (todo) => {
+        console.log(todo)
         if (project === undefined) {
             await updateDoc(doc(db, "todos", todo.id), {completed: !todo.completed})
             updateTodos()
@@ -76,7 +76,6 @@ export default function Todo({ projects, project, todo, className, updateProject
             updateProjects()
             updateTodos()
         }
-
     }
 
     const manageProject = async (project, selectedProject, todo) => {
@@ -169,7 +168,6 @@ export default function Todo({ projects, project, todo, className, updateProject
             updateProjects()
             updateTodos()
         }
-
     }
 
     const handleDelete = async (id) => {
@@ -191,7 +189,6 @@ export default function Todo({ projects, project, todo, className, updateProject
                 updateProjects()
                 updateTodos()
             }
-
         }
     }
     

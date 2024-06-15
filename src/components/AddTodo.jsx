@@ -1,11 +1,21 @@
 import React, { useState } from 'react'
 import { db } from '../firebase.js'
-import { collection, addDoc, updateDoc } from 'firebase/firestore'
+import { doc, collection, addDoc, updateDoc } from 'firebase/firestore'
 
-export default function AddTodo({ user, project, updateTodos }) {
+export default function AddTodo({ user, project, updateProjects, updateTodos }) {
     const [title, setTitle] = useState('')
     const [description, setDescription] = useState('')
     const [date, setDate] = useState('')
+
+    const generateID = () => {
+        const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+        let result = '';
+        const charactersLength = characters.length;
+        for (let m = 0; m < 20; m++) {
+            result += characters.charAt(Math.floor(Math.random() * charactersLength));
+        }
+        return result;
+    }
 
     const handleSubmit = async (e) => {
         e.preventDefault()
@@ -13,12 +23,14 @@ export default function AddTodo({ user, project, updateTodos }) {
             await addDoc(collection(db, 'todos'), {user: user, title: title, description: description, date: date, completed: false, priority: 0, labels: []})
             setTitle(''); setDescription(''); setDate(''); updateTodos()
         } else {
-            
-            await updateDoc((db, 'projects'), {})
-            setTitle(''); setDescription(''); setDate(''); updateTodos()
+            let id = generateID()
+            let todo = {id: id, user: user, title: title, description: description, date: date, completed: false, priority: 0, labels: []}
+            project.todos.push(todo)
+            await updateDoc(doc(db, "projects", project.id), {todos: project.todos})
+            setTitle(''); setDescription(''); setDate('');
+            updateProjects(); updateTodos()
         }
     }
-
     return (
         <form onSubmit={handleSubmit}>
             <div> <input type='text' placeholder='Title...' value={title} onChange={(e) => setTitle(e.target.value)} required/> </div>

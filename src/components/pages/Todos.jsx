@@ -187,7 +187,7 @@ export default function Todos() {
     return (
         <div>
             <SearchBar updateTodos={searchResults}/>
-            <AddTodo user={location.state.user} project={location.state.project} updateTodos={fetchTodos}/>
+            <AddTodo user={location.state.user} project={location.state.project} updateProjects={fetchProjects} updateTodos={fetchTodos}/>
             <select value={sortType} onChange={changeSort}>
                 <option value=''> --- </option>
                 <option value='title'> Title </option>
