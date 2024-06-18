@@ -68,9 +68,6 @@ export default function Login() {
                     <button className="button" onClick={register}>REGISTER</button>
                 </div>
             </div>
-            <div className="footer">
-                made by Jeremi Sadkowski, Jacek Kudrys & Stanisław Pilch
-            </div>
         </div>
     );
 }

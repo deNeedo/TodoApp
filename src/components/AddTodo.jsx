@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import { db } from '../firebase.js'
 import { doc, collection, addDoc, updateDoc } from 'firebase/firestore'
 
-export default function AddTodo({ user, project, updateProjects, updateTodos }) {
+export default function AddTodo({ user, project, updateProjects, updateTodos, onClose }) {
     const [title, setTitle] = useState('')
     const [description, setDescription] = useState('')
     const [date, setDate] = useState('')
@@ -30,7 +30,9 @@ export default function AddTodo({ user, project, updateProjects, updateTodos }) 
             setTitle(''); setDescription(''); setDate('');
             updateProjects(); updateTodos()
         }
+        onClose(); // Close the modal after adding the todo
     }
+
     return (
         <form onSubmit={handleSubmit}>
             <div> <input type='text' placeholder='Title...' value={title} onChange={(e) => setTitle(e.target.value)} required/> </div>

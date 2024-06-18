@@ -66,7 +66,7 @@ export default function Home() {
     };
 
     return (
-        <div className="main-container">
+        <div className="main-container d-flex justify-content-center align-items-center vh-100">
             <div className="background-shapes">
                 <div className="shape shape1"></div>
                 <div className="shape shape2"></div>
@@ -75,7 +75,7 @@ export default function Home() {
                 <div className="shape shape5"></div>
             </div>
             <div className="container fade-in">
-                <div className="title">
+                <div className="title-main">
                     TODO APP
                     <span className="hand">👋🏼</span>
                 </div>

@@ -189,10 +189,15 @@ export default function Todos() {
     };
 
     return (
-        <div className="main-container">
-            <button className="home-button" onClick={home}>
-                <span className="arrow">←</span> HOME
-            </button>
+        <div className="todos-container">
+            <div className="header">
+                <button className="home-button" onClick={home}>
+                    <span className="arrow">←</span> HOME
+                </button>
+                <div className="d-flex flex-grow-1 justify-content-center">
+                    <SearchBar updateTodos={searchResults} />
+                </div>
+            </div>
             <div className="background-shapes">
                 <div className="shape shape1"></div>
                 <div className="shape shape2"></div>
@@ -200,10 +205,7 @@ export default function Todos() {
                 <div className="shape shape4"></div>
                 <div className="shape shape5"></div>
             </div>
-            <div className="content">
-                <div className="header">
-                    <SearchBar updateTodos={searchResults} />
-                </div>
+            <div className="main-container">
                 <div className="sort-container">
                     <label htmlFor="sortType">Sort by:</label>
                     <select id="sortType" value={sortType} onChange={changeSort}>
@@ -214,7 +216,7 @@ export default function Todos() {
                         <option value='priority'>Priority</option>
                     </select>
                 </div>
-                <div className="todos-container">
+                <div className="todos-list-container">
                     {todos.map((todo) => (
                         <Todo
                             className={`todo ${todo.completed ? 'complete' : Date.parse(todo.date) - Date.now() < 0 ? 'overdue' : 'incomplete'}`}
