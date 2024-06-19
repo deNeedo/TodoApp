@@ -66,7 +66,6 @@ export default function Todo({ projects, project, todo, className, updateProject
                 }
             }
             project.todos.forEach(findIndex)
-            console.log(index)
             let obj = project.todos[index]
             obj.completed = !obj.completed
             project.todos[index] = obj

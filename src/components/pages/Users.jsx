@@ -5,7 +5,6 @@ import { collection, getDocs } from 'firebase/firestore'
 
 import User from '../User.jsx'
 
-
 export default function Projects() {
     const navigate = useNavigate(); const location = useLocation()
 
