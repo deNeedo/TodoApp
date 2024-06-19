@@ -57,7 +57,6 @@ export default function Todo({ projects, project, todo, className, updateProject
     }
 
     const toggleComplete = async (todo) => {
-        console.log(todo)
         if (project === undefined) {
             await updateDoc(doc(db, "todos", todo.id), {completed: !todo.completed})
             updateTodos()

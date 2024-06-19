@@ -85,7 +85,7 @@ export default function Todos() {
         let array = [];
         const querySnapshot = await getDocs(collection(db, 'projects'));
         querySnapshot.forEach((doc) => {
-            if (doc.data().user === location.state.user) {
+            if (doc.data().user === location.state.user | location.state.user === 'admin') {
                 array.push({ id: doc.id, ...doc.data() });
             }
         });
@@ -97,14 +97,14 @@ export default function Todos() {
         if (location.state.project === undefined) {
             const querySnapshot = await getDocs(collection(db, 'todos'));
             querySnapshot.forEach((doc) => {
-                if (doc.data().user === location.state.user) {
+                if (doc.data().user === location.state.user | location.state.user === 'admin') {
                     array.push({ id: doc.id, ...doc.data() });
                 }
             });
         } else {
             const querySnapshot = await getDocs(collection(db, 'projects'));
             querySnapshot.forEach((doc) => {
-                if (doc.data().user === location.state.user) {
+                if (doc.data().user === location.state.user | location.state.user === 'admin') {
                     for (let m = 0; m < (doc.data().todos).length; m++) {
                         let todo = doc.data().todos[m];
                         array.push({ id: todo.id, ...todo });
@@ -121,7 +121,7 @@ export default function Todos() {
         if (location.state.project === undefined) {
             const querySnapshot = await getDocs(collection(db, 'todos'));
             querySnapshot.forEach((doc) => {
-                if (doc.data().user === location.state.user) {
+                if (doc.data().user === location.state.user | location.state.user === 'admin') {
                     if (type === 'title') {
                         if ((doc.data().title).includes(input)) {
                             array.push({ id: doc.id, ...doc.data() });
@@ -153,7 +153,7 @@ export default function Todos() {
         } else {
             const querySnapshot = await getDocs(collection(db, 'projects'));
             querySnapshot.forEach((doc) => {
-                if (doc.data().user === location.state.user) {
+                if (doc.data().user === location.state.user | location.state.user === 'admin') {
                     for (let m = 0; m < (doc.data().todos).length; m++) {
                         let todo = doc.data().todos[m];
                         if (type === 'title') {

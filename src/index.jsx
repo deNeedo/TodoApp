@@ -8,9 +8,9 @@ import './index.css';
 import Home from './components/pages/Home.jsx'
 import Login from './components/pages/Login.jsx'
 import Register from './components/pages/Register.jsx'
+import Users from './components/pages/Users.jsx'
 import Projects from './components/pages/Projects.jsx'
 import Todos from './components/pages/Todos.jsx'
-import Admin from './components/pages/Admin.jsx'
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
@@ -35,9 +35,9 @@ function AnimatedRoutes() {
                     <Route path="/home" element={<Home />} />
                     <Route path="/login" element={<Login />} />
                     <Route path="/register" element={<Register />} />
+                    <Route path="/users" element={<Users />} />
                     <Route path="/projects" element={<Projects />} />
                     <Route path="/todos" element={<Todos />} />
-                    <Route path="/admin" element={<Admin />} />
                 </Routes>
             </CSSTransition>
         </TransitionGroup>

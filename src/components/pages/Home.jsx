@@ -10,6 +10,7 @@ export default function Home() {
     const navigate = useNavigate();
     const location = useLocation();
     
+    const [users, setUsers] = useState([]);
     const [projects, setProjects] = useState([]);
     const [todos, setTodos] = useState([]);
     const [user, setUser] = useState(location.state !== null ? location.state.user : null);
@@ -20,6 +21,10 @@ export default function Home() {
 
     const registerRedirect = () => {
         user === null ? navigate('/register', { state: { user: user } }) : console.log("Already logged in!");
+    };
+
+    const usersRedirect = () => {
+        navigate('/users', { state: { user: user, users: users } });
     };
 
     const projectsRedirect = () => {
@@ -37,17 +42,34 @@ export default function Home() {
     useEffect(() => {
         if (user === null) {
             setUser(null);
+        } else if (user === 'admin') {
+            fetchUsers();
+            fetchProjects();
+            fetchTodos();
         } else {
             fetchProjects();
             fetchTodos();
         }
     }, [user]);
 
+    const fetchUsers = async () => {
+        let array = [];
+        const querySnapshot = await getDocs(collection(db, 'users'));
+        querySnapshot.forEach((doc) => {
+            if (location.state.user === 'admin') {
+                if (doc.data().username !== 'admin') {
+                    array.push({id: doc.id, ...doc.data()})
+                }
+            }
+        });
+        setUsers(array);
+    };
+
     const fetchProjects = async () => {
         let array = [];
         const querySnapshot = await getDocs(collection(db, 'projects'));
         querySnapshot.forEach((doc) => {
-            if (doc.data().user === location.state.user) {
+            if (doc.data().user === location.state.user | location.state.user === 'admin') {
                 array.push({ id: doc.id, ...doc.data() });
             }
         });
@@ -58,7 +80,7 @@ export default function Home() {
         let array = [];
         const querySnapshot = await getDocs(collection(db, 'todos'));
         querySnapshot.forEach((doc) => {
-            if (doc.data().user === location.state.user) {
+            if (doc.data().user === location.state.user | location.state.user === 'admin') {
                 array.push({ id: doc.id, ...doc.data() });
             }
         });
@@ -79,7 +101,22 @@ export default function Home() {
                     TODO APP
                     <span className="hand">👋🏼</span>
                 </div>
-                {user !== null ? (
+                {user === 'admin' ? (
+                    <>
+                        <div className="button-container">
+                            <button onClick={usersRedirect}>USERS</button>
+                        </div>
+                        <div className="button-container">
+                            <button onClick={projectsRedirect}>PROJECTS</button>
+                        </div>
+                        <div className="button-container">
+                            <button onClick={todosRedirect}>TODOS</button>
+                        </div>
+                        <div className="button-container">
+                            <button onClick={logout}>LOGOUT</button>
+                        </div>
+                    </>
+                ) : user !== undefined ? (
                     <>
                         <div className="button-container">
                             <button onClick={projectsRedirect}>PROJECTS</button>

@@ -22,7 +22,7 @@ export default function Projects() {
         let array = []
         const querySnapshot = await getDocs(collection(db, 'projects'));
         querySnapshot.forEach((doc) => {
-            if (doc.data().user === location.state.user) {
+            if (doc.data().user === location.state.user | location.state.user === 'admin') {
                 array.push({id: doc.id, ...doc.data()})
             }
         })
