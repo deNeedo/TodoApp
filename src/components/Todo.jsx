@@ -1,15 +1,14 @@
-import React, { useState } from 'react'
-import { useLocation } from 'react-router-dom'
-import { db } from '../firebase.js'
-import { doc, collection, addDoc, updateDoc, deleteDoc } from 'firebase/firestore'
+import React, { useState } from 'react';
+import { useLocation } from 'react-router-dom';
+import { db } from '../firebase.js';
+import { doc, updateDoc, deleteDoc, addDoc } from 'firebase/firestore';
+import EditTodoModal from './EditTodoModal.jsx';
 
 export default function Todo({ projects, project, todo, className, updateProjects, updateTodos }) {
-    const location = useLocation()
-    const [newTitle, setNewTitle] = useState(todo.title)
-    const [newDescription, setNewDescription] = useState(todo.description)
-    const [newDate, setNewDate] = useState(todo.date)
-    const [newPriority, setNewPriority] = useState(todo.priority)
+    const location = useLocation();
+    const [showEditModal, setShowEditModal] = useState(false);
     const [selectedProject, setSelectedProject] = useState(projects.length > 0 ? projects[0] : undefined)
+<<<<<<< Updated upstream
 
     const convertInt = (priority) => {
         let temp = ''; let flag = true
@@ -106,159 +105,122 @@ export default function Todo({ projects, project, todo, className, updateProject
             updateTodos()
         }
     }
+=======
+    const toggleEditModal = () => {
+        setShowEditModal(!showEditModal);
+    };
+>>>>>>> Stashed changes
 
     const selectProject = (e) => {
         e.preventDefault()
         setSelectedProject(e.target.value)
     }
 
-    const addLabel = async (todo) => {
-        let unique = true; let index
-        function findIndex(elem) {
-            if (response == elem) {
-                unique = false
+    const handleEdit = async (todo, title, description, date, priority) => {
+        if (title !== '') {
+            if (project === undefined) {
+                await updateDoc(doc(db, "todos", todo.id), { title, description, date, priority });
+                updateTodos();
+            } else {
+                const index = project.todos.findIndex(t => t.id === todo.id);
+                if (index !== -1) {
+                    project.todos[index] = { ...todo, title, description, date, priority };
+                    await updateDoc(doc(db, "projects", project.id), { todos: project.todos });
+                    updateProjects();
+                    updateTodos();
+                }
             }
-        } function findTodo(elem, idx) {
-            if (todo.id === elem.id) {
-                index = idx
-            }
-        }
-        let response = window.prompt("Enter new label: ")
-        if (response !== null & response !== '') {
-            todo.labels.forEach(findIndex)
-            if (unique) {
-                todo.labels.push(response)
-                if (project === undefined) {
-                    await updateDoc(doc(db, "todos", todo.id), {labels: todo.labels})
-                    updateTodos()
-                } else {
-                    console.log(index)
-                    project.todos.forEach(findTodo)
-                    console.log(index)
-                    let obj = project.todos[index]
-                    obj.labels = todo.labels
-                    project.todos[index] = obj
-                    await updateDoc(doc(db, "projects", project.id), {todos: project.todos})
-                    updateProjects()
-                    updateTodos()
-                } 
-            }
-        }
-    }
-
-    const deleteLabel = async (todo, label) => {
-        let index
-        function findIndex(elem, pos) {
-            if (label === elem) {
-                index = pos
-            }
-        }
-        todo.labels.forEach(findIndex)
-        todo.labels.splice(index, 1)
-        if (project === undefined) {
-            await updateDoc(doc(db, "todos", todo.id), {labels: todo.labels})
-            updateTodos()
+            toggleEditModal();
         } else {
-            project.todos.forEach(findIndex)
-            let obj = project.todos[index]
-            obj.labels = todo.labels
-            project.todos[index] = obj
-            await updateDoc(doc(db, "projects", project.id), {todos: project.todos})
-            updateProjects()
-            updateTodos()
+            console.log('You need to provide a title for your todo!');
         }
-    }
+    };
+
+    const toggleComplete = async (todo) => {
+        if (project === undefined) {
+            await updateDoc(doc(db, "todos", todo.id), { completed: !todo.completed });
+            updateTodos();
+        } else {
+            const index = project.todos.findIndex(t => t.id === todo.id);
+            if (index !== -1) {
+                project.todos[index].completed = !project.todos[index].completed;
+                await updateDoc(doc(db, "projects", project.id), { todos: project.todos });
+                updateProjects();
+                updateTodos();
+            }
+        }
+    };
+
+    const manageProject = async (project, selectedProject, todo) => {
+        if (project === undefined) {
+            if (selectedProject && !selectedProject.todos.some(t => t.id === todo.id)) {
+                selectedProject.todos.push(todo);
+                await updateDoc(doc(db, "projects", selectedProject.id), { todos: selectedProject.todos });
+                await deleteDoc(doc(db, "todos", todo.id));
+                updateProjects();
+                updateTodos();
+            } else {
+                console.log('Todo already added to this project!');
+            }
+        } else {
+            const index = project.todos.findIndex(t => t.id === todo.id);
+            if (index !== -1) {
+                const [removedTodo] = project.todos.splice(index, 1);
+                await updateDoc(doc(db, "projects", project.id), { todos: project.todos });
+                await addDoc(collection(db, 'todos'), { ...removedTodo, user: location.state.user });
+                updateProjects();
+                updateTodos();
+            }
+        }
+    };
 
     const handleDelete = async (id) => {
-        let response = window.confirm("Are you sure?")
+        const response = window.confirm("Are you sure?");
         if (response) {
             if (project === undefined) {
-                await deleteDoc(doc(db, "todos", id))
-                updateTodos()
+                await deleteDoc(doc(db, "todos", id));
+                updateTodos();
             } else {
-                let index
-                function findIndex(elem, idx) {
-                    if (todo.id === elem.id) {
-                        index = idx
-                    }
+                const index = project.todos.findIndex(t => t.id === id);
+                if (index !== -1) {
+                    project.todos.splice(index, 1);
+                    await updateDoc(doc(db, "projects", project.id), { todos: project.todos });
+                    updateProjects();
+                    updateTodos();
                 }
-                project.todos.forEach(findIndex)
-                project.todos.splice(index, 1)
-                await updateDoc(doc(db, "projects", project.id), {todos: project.todos})
-                updateProjects()
-                updateTodos()
             }
         }
-    }
-    
-    const handleTitleChange = (e) => {
-        e.preventDefault()
-        todo.title = ''
-        setNewTitle(e.target.value)
-    }
-
-    const handleDescriptionChange = (e) => {
-        e.preventDefault()
-        todo.description = ''
-        setNewDescription(e.target.value)
-    }
-
-    const handleDateChange = (e) => {
-        e.preventDefault()
-        todo.date = ''
-        setNewDate(e.target.value)
-    }
-
-    const handlePriorityChange = (e) => {
-        e.preventDefault()
-        todo.priority = 0
-        setNewPriority(convertInt(e.target.value))
-    }
+    };
 
     return (
-        project === undefined ?
-        <div className={className}>
-            <div> <input type='text' value={todo.title === '' ? newTitle : todo.title} onChange={handleTitleChange}/> </div>
-            <div> <input type='text' value={todo.description === '' ? newDescription : todo.description} onChange={handleDescriptionChange}/> </div>
-            <div> <input type='datetime-local' value={todo.date === '' ? newDate : todo.date} onChange={handleDateChange}/> </div>
-            <div> <input type='number' min='0' value={todo.priority === 0 ? newPriority : todo.priority} onChange={handlePriorityChange}/> </div>
-            <div> {todo.labels.map((label) => (
-                <button key={Math.random()} onClick={() => deleteLabel(todo, label)}> {label} </button>
-            ))}
+        <>
+            <div className={className}>
+                <div className="todo-header">
+                    <span className="todo-title">{todo.title}</span>
+                    <span className="todo-priority">Priority: {todo.priority}</span>
+                </div>
+                <span className="date">{todo.date}</span>
+                <div className="description">
+                    {todo.description}
+                </div>
+                <div className="actions">
+                    <button className="edit" onClick={toggleEditModal}>Edit</button>
+                    <button className="edit" onClick={() => toggleComplete(todo)}>Toggle state</button>
+                    <button className="edit" onClick={() => manageProject(project, selectedProject, todo)}>{project === undefined ? 'Move to project' : 'Remove from project'}</button>
+                    <select className="project-sort-container" value={selectedProject} onChange={selectProject}> {projects.map((project) => (
+                        <option key={Math.random()} value={project}> {project.title} </option>
+                            ))}
+                    </select>
+                    <button className="delete" onClick={() => handleDelete(todo.id)}>Delete</button>
+                </div>
             </div>
-            <div>
-                <button onClick={() => toggleComplete(todo)}> Toggle state </button>
-                <button onClick={() => handleEdit(todo, newTitle, newDescription, newDate, newPriority)}> Edit </button>
-                <button onClick={() => addLabel(todo)}> Add label </button>
-                <button onClick={() => manageProject(project, selectedProject, todo)}> {project === undefined ? 'Move to project' : 'Remove from project'} </button>
-                <select value={selectedProject} onChange={selectProject}> {projects.map((project) => (
-                    <option key={Math.random()} value={project}> {project.title} </option>
-                ))}
-                </select>
-                <button onClick={() => handleDelete(todo.id)}> Delete </button>
-            </div>
-        </div>
-        :
-        <div className={className}>
-            <div> <input type='text' value={todo.title === '' ? newTitle : todo.title} onChange={handleTitleChange}/> </div>
-            <div> <input type='text' value={todo.description === '' ? newDescription : todo.description} onChange={handleDescriptionChange}/> </div>
-            <div> <input type='datetime-local' value={todo.date === '' ? newDate : todo.date} onChange={handleDateChange}/> </div>
-            <div> <input type='number' min='0' value={todo.priority === 0 ? newPriority : todo.priority} onChange={handlePriorityChange}/> </div>
-            <div> {todo.labels.map((label) => (
-                <button key={Math.random()} onClick={() => deleteLabel(todo, label)}> {label} </button>
-            ))}
-            </div>
-            <div>
-                <button onClick={() => toggleComplete(todo)}> Toggle state </button>
-                <button onClick={() => handleEdit(todo, newTitle, newDescription, newDate, newPriority)}> Edit </button>
-                <button onClick={() => addLabel(todo)}> Add label </button>
-                <button onClick={() => manageProject(project, undefined, todo)}> {project === undefined ? 'Move to project' : 'Remove from project'} </button>
-                {/* <select value={selectedProject} onChange={selectProject}> {projects.map((project) => (
-                    <option key={Math.random()} value={project}> {project.title} </option>
-                ))}
-                </select> */}
-                <button onClick={() => handleDelete(todo.id)}> Delete </button>
-            </div>
-        </div>
-    )
+            {showEditModal && (
+                <EditTodoModal
+                    todo={todo}
+                    handleEdit={handleEdit}
+                    onClose={toggleEditModal}
+                />
+            )}
+        </>
+    );
 }

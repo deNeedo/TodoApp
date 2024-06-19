@@ -9,7 +9,8 @@ export default function Login() {
 
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
-    
+    const [error, setError] = useState('');
+
     const register = () => {navigate('/register', {state: {user: location.state.user}});}
     const home = () => {navigate('/home', {state: {user: location.state.user}});}
     const login = (user) => {navigate('/home', {state: {user: user}});}
@@ -23,11 +24,13 @@ export default function Login() {
                 login(username);
             } else if (response === 1) {
                 console.log('Wrong credentials!');
+                setError('Wrong credentials!');
             }
             setUsername(''); 
             setPassword('');
         } else {
             // handle locking button if not all fields contain data
+            setError('Please fill in all fields.');
         }
     };
 
@@ -57,6 +60,7 @@ export default function Login() {
                         <label>Password</label>
                         <input type='password' placeholder='Enter password...' value={password} onChange={(e) => setPassword(e.target.value)} required/> 
                     </div>
+                    {error && <div className="error-message">{error}</div>}
                     <div className="submit-container">
                         <button type="submit">SUBMIT</button>
                     </div>

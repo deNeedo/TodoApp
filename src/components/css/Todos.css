@@ -1,15 +1,20 @@
-/* Rename .container to .todos-container */
+body {
+    margin: 0;
+    padding: 0;
+    font-family: 'Montserrat', sans-serif;
+    background: #f0f0f0;
+    overflow: hidden; /* Prevent body from scrolling */
+}
+
 .todos-container {
-    position: relative; /* Ensure it is above background shapes */
     width: 100%;
-    height: 100vh; /* Full viewport height */
-    z-index: 2; /* Ensure container content is above background shapes */
+    height: 100vh;
     display: flex;
-    flex-direction: column; /* Allows for flexible content alignment */
-    justify-content: flex-start; /* Align items to the top */
-    align-items: center; /* Center items horizontally */
-    padding: 20px;
-    box-sizing: border-box; /* Include padding in width and height */
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    position: relative;
+    overflow-y: auto; /* Enable vertical scrolling */
 }
 
 .main-container {
@@ -58,6 +63,106 @@
     width: calc(33.333% - 20px);
     min-width: 250px;
     box-sizing: border-box;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    position: relative;
+    height: 250px; /* Fixed height for all todo cards */
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    overflow: hidden;
+}
+
+.todo.overdue {
+    border-left: 5px solid #0000FF; /* Red border to indicate incomplete status */
+}
+
+.todo.incomplete {
+    border-left: 5px solid #FF0000; /* Red border to indicate incomplete status */
+}
+
+.todo.complete {
+    border-left: 5px solid #00FF00; /* Green border to indicate complete status */
+}
+
+.todo:hover {
+    transform: scale(1.05);
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+}
+
+.todo-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.todo-title {
+    font-size: 18px;
+    font-weight: bold;
+    color: #333;
+}
+
+.todo-priority {
+    font-size: 14px;
+    font-weight: bold;
+    color: #FF0000; /* Customize this color as needed */
+}
+
+.todo .date {
+    font-size: 12px;
+    color: #999;
+    margin-left: 10px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.todo .description {
+    font-size: 14px;
+    color: #666;
+    flex-grow: 1; /* Allow description to grow */
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-line-clamp: 5; /* Limit to 5 lines */
+    -webkit-box-orient: vertical;
+    text-overflow: ellipsis;
+}
+
+.todo .actions {
+    display: flex;
+    flex-wrap: wrap; /* Allow buttons to wrap */
+    gap: 5px 20px;
+    margin-top: 10px;
+    justify-content: center; /* Align buttons to the right */
+}
+
+.todo .actions button {
+    padding: 5px 10px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    font-size: 12px; /* Smaller font size */
+    flex: 1 1 auto; /* Allow buttons to grow and shrink */
+    max-width: 40%; /* Ensure buttons do not exceed container width */
+}
+
+.todo .actions button.edit {
+    background-color: #4CAF50;
+    color: white;
+}
+
+.todo .actions button.delete {
+    background-color: #FF0000;
+    color: white;
+}
+
+.todo .actions button.edit:hover {
+    background-color: #45a049;
+}
+
+.todo .actions button.delete:hover {
+    background-color: #e60000;
 }
 
 .button-container {
@@ -114,7 +219,7 @@ button:hover {
     padding: 10px 20px;
     border: none;
     border-radius: 5px;
-    background-color: #008CBA;
+    background-color: #45a049;
     color: white;
     font-size: 16px;
     cursor: pointer;
@@ -122,7 +227,7 @@ button:hover {
 }
 
 .add-todo-button:hover {
-    background-color: #007bb5;
+    background-color: #45a049;
     transform: scale(1.05);
 }
 
@@ -371,6 +476,20 @@ button:hover {
     transition: border-color 0.3s ease, box-shadow 0.3s ease;
     font-size: 16px;
 }
+
+.project-sort-container {
+    padding: 5px;
+    border-radius: 5px;
+    border: 2px solid #ccc;
+    background-color: #f0f0f0;
+    color: #344541;
+    outline: none;
+    box-shadow: none;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+    font-size: 10px;
+}
+
+
 
 .sort-container select:focus {
     border-color: #4CAF50; /* Green border on focus */
