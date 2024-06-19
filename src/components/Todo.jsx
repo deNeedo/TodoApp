@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import { db } from '../firebase.js';
-import { doc, updateDoc, deleteDoc, addDoc } from 'firebase/firestore';
+import { collection, doc, updateDoc, deleteDoc, addDoc } from 'firebase/firestore';
 import EditTodoModal from './EditTodoModal.jsx';
 
 export default function Todo({ projects, project, todo, className, updateProjects, updateTodos }) {
@@ -66,6 +66,7 @@ export default function Todo({ projects, project, todo, className, updateProject
                 }
             }
             project.todos.forEach(findIndex)
+            console.log(index)
             let obj = project.todos[index]
             obj.completed = !obj.completed
             project.todos[index] = obj
@@ -112,64 +113,6 @@ export default function Todo({ projects, project, todo, className, updateProject
         e.preventDefault()
         setSelectedProject(e.target.value)
     }
-
-    const handleEdit = async (todo, title, description, date, priority) => {
-        if (title !== '') {
-            if (project === undefined) {
-                await updateDoc(doc(db, "todos", todo.id), { title, description, date, priority });
-                updateTodos();
-            } else {
-                const index = project.todos.findIndex(t => t.id === todo.id);
-                if (index !== -1) {
-                    project.todos[index] = { ...todo, title, description, date, priority };
-                    await updateDoc(doc(db, "projects", project.id), { todos: project.todos });
-                    updateProjects();
-                    updateTodos();
-                }
-            }
-            toggleEditModal();
-        } else {
-            console.log('You need to provide a title for your todo!');
-        }
-    };
-
-    const toggleComplete = async (todo) => {
-        if (project === undefined) {
-            await updateDoc(doc(db, "todos", todo.id), { completed: !todo.completed });
-            updateTodos();
-        } else {
-            const index = project.todos.findIndex(t => t.id === todo.id);
-            if (index !== -1) {
-                project.todos[index].completed = !project.todos[index].completed;
-                await updateDoc(doc(db, "projects", project.id), { todos: project.todos });
-                updateProjects();
-                updateTodos();
-            }
-        }
-    };
-
-    const manageProject = async (project, selectedProject, todo) => {
-        if (project === undefined) {
-            if (selectedProject && !selectedProject.todos.some(t => t.id === todo.id)) {
-                selectedProject.todos.push(todo);
-                await updateDoc(doc(db, "projects", selectedProject.id), { todos: selectedProject.todos });
-                await deleteDoc(doc(db, "todos", todo.id));
-                updateProjects();
-                updateTodos();
-            } else {
-                console.log('Todo already added to this project!');
-            }
-        } else {
-            const index = project.todos.findIndex(t => t.id === todo.id);
-            if (index !== -1) {
-                const [removedTodo] = project.todos.splice(index, 1);
-                await updateDoc(doc(db, "projects", project.id), { todos: project.todos });
-                await addDoc(collection(db, 'todos'), { ...removedTodo, user: location.state.user });
-                updateProjects();
-                updateTodos();
-            }
-        }
-    };
 
     const handleDelete = async (id) => {
         const response = window.confirm("Are you sure?");

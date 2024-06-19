@@ -116,7 +116,7 @@ export default function Home() {
                             <button onClick={logout}>LOGOUT</button>
                         </div>
                     </>
-                ) : user !== undefined ? (
+                ) : user !== null ? (
                     <>
                         <div className="button-container">
                             <button onClick={projectsRedirect}>PROJECTS</button>
