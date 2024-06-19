@@ -8,7 +8,6 @@ export default function Todo({ projects, project, todo, className, updateProject
     const location = useLocation();
     const [showEditModal, setShowEditModal] = useState(false);
     const [selectedProject, setSelectedProject] = useState(projects.length > 0 ? projects[0] : undefined)
-<<<<<<< Updated upstream
 
     const convertInt = (priority) => {
         let temp = ''; let flag = true
@@ -105,11 +104,9 @@ export default function Todo({ projects, project, todo, className, updateProject
             updateTodos()
         }
     }
-=======
     const toggleEditModal = () => {
         setShowEditModal(!showEditModal);
     };
->>>>>>> Stashed changes
 
     const selectProject = (e) => {
         e.preventDefault()
