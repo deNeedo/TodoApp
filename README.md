@@ -62,7 +62,7 @@ The application is built using React for the front end, and Firebase for the bac
     npm run dev
     ```
 
-. 6. **Access the application**
+6. **Access the application**
 
     Open your web browser and go to `http://localhost:8000` to see the Todo App in action.
 
